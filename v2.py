@@ -20,6 +20,7 @@ for j in range(len(root[0][i+1])): # Loop for every song
         Artist_i = int()
         Album_i = int()
         PlayCount_i = int()
+        Rating_i = int()
         for field_i, field in enumerate(song_detail):
             if field_i % 2 == 0 and field.text == 'Name':
                 Name_i = field_i + 1
@@ -29,6 +30,8 @@ for j in range(len(root[0][i+1])): # Loop for every song
                 Album_i = field_i + 1
             if field_i % 2 == 0 and field.text == 'Play Count':
                 PlayCount_i = field_i + 1
+            if field_i % 2 == 0 and field.text == 'Rating':
+                Rating_i = field_i + 1    
         song = dict()
         normal = True
         if PlayCount_i == 0:
@@ -42,6 +45,13 @@ for j in range(len(root[0][i+1])): # Loop for every song
                 song['Artist'] = field.text
             if field_i == Album_i:
                 song['Album'] = field.text
+            if field_i == Rating_i:
+                try:
+                    song['Rating'] = int(field.text)
+                except ValueError:
+                    normal = False
+                except TypeError:
+                    pass
             if field_i == PlayCount_i:
                 try:
                     testisint = int(field.text)
@@ -66,3 +76,6 @@ print(res.head(30))
 artistgroup = df.groupby('Artist').agg({'Play Count':sum})
 artistres = artistgroup.sort_values('Play Count', ascending=False)
 print(artistres.head(30))
+
+ratingcount = df.groupby('Rating').agg('count').sort_values('Rating', ascending=False)
+print(ratingcount.head(5))
